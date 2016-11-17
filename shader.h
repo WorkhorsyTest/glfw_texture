@@ -72,7 +72,7 @@ public:
         glCompileShader(fragment);
 		checkCompileErrors(fragment, "FRAGMENT");
 		// If geometry shader is given, compile geometry shader
-		GLuint geometry;
+		GLuint geometry = 0;
 		if(geometryPath != nullptr)
 		{
 			const GLchar * gShaderCode = geometryCode.c_str();
