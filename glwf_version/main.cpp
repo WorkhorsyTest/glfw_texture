@@ -128,35 +128,31 @@ int main() {
 
     glBindVertexArray(0); // Unbind VAO
 
-
-    // Load and create a texture
-    GLuint texture1;
-    GLuint texture2;
     // ====================
     // Texture 1
     // ====================
+    GLuint texture1;
     glGenTextures(1, &texture1);
-    glBindTexture(GL_TEXTURE_2D, texture1); // All upcoming GL_TEXTURE_2D operations now have effect on our texture object
+    glBindTexture(GL_TEXTURE_2D, texture1);
     // Set our texture parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// Set texture wrapping to GL_REPEAT
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     // Set texture filtering
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     // Load, create texture and generate mipmaps
-    //int width, height;
-
 	SDL_Surface* surface1 = IMG_Load("container.jpg");
 	surface1 = EnsureSurfaceRGBA8888(surface1);
-
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface1->w, surface1->h, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, surface1->pixels);
     glGenerateMipmap(GL_TEXTURE_2D);
 	SDL_FreeSurface(surface1);
 	surface1 = nullptr;
-    glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
+    glBindTexture(GL_TEXTURE_2D, 0);
+
     // ===================
     // Texture 2
     // ===================
+    GLuint texture2;
     glGenTextures(1, &texture2);
     glBindTexture(GL_TEXTURE_2D, texture2);
     // Set our texture parameters
@@ -174,10 +170,8 @@ int main() {
 	surface2 = nullptr;
     glBindTexture(GL_TEXTURE_2D, 0);
 
-
     // Game loop
-    while (!glfwWindowShouldClose(window))
-    {
+    while (! glfwWindowShouldClose(window)) {
         // Check if any events have been activiated (key pressed, mouse moved etc.) and call corresponding response functions
         glfwPollEvents();
 
