@@ -8,7 +8,9 @@
 #include <GLFW/glfw3.h>
 
 // Other Libs
-#include <SOIL/SOIL.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+//#include <SOIL/SOIL.h>
 
 // Other includes
 #include "shader.h"
@@ -21,6 +23,12 @@ const GLuint WIDTH = 1208, HEIGHT = 800;
 
 // The MAIN function, from here we start the application and run the game loop
 int main() {
+	// Init SDL
+	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+		fprintf(stderr, "Could not initialize SDL: %s\n", SDL_GetError());
+		return 1;
+	}
+
     // Init GLFW
     glfwInit();
     // Set all the required options for GLFW
@@ -55,7 +63,7 @@ int main() {
          0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // Top Right
          0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // Bottom Right
         -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // Bottom Left
-        -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // Top Left 
+        -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // Top Left
     };
     GLuint indices[] = {  // Note that we start from 0!
         0, 1, 3, // First Triangle
@@ -87,7 +95,7 @@ int main() {
     glBindVertexArray(0); // Unbind VAO
 
 
-    // Load and create a texture 
+    // Load and create a texture
     GLuint texture1;
     GLuint texture2;
     // ====================
@@ -102,13 +110,15 @@ int main() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     // Load, create texture and generate mipmaps
-    int width, height;
+    //int width, height;
 
-    unsigned char* image = SOIL_load_image("container.jpg", &width, &height, 0, SOIL_LOAD_RGB);
+	SDL_Surface* surface = IMG_Load("container.jpg");
+//    unsigned char* image = SOIL_load_image("container.jpg", &width, &height, 0, SOIL_LOAD_RGB);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, surface->w, surface->h, 0, GL_RGB, GL_UNSIGNED_BYTE, surface);
     glGenerateMipmap(GL_TEXTURE_2D);
-    SOIL_free_image_data(image);
+//    SOIL_free_image_data(image);
+	SDL_FreeSurface(surface);
     glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
     // ===================
     // Texture 2
@@ -122,10 +132,12 @@ int main() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     // Load, create texture and generate mipmaps
-    image = SOIL_load_image("awesomeface.png", &width, &height, 0, SOIL_LOAD_RGB);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+	surface = IMG_Load("awesomeface.png");
+//    image = SOIL_load_image("awesomeface.png", &width, &height, 0, SOIL_LOAD_RGB);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, surface->w, surface->h, 0, GL_RGB, GL_UNSIGNED_BYTE, surface);
     glGenerateMipmap(GL_TEXTURE_2D);
-    SOIL_free_image_data(image);
+//    SOIL_free_image_data(image);
+	SDL_FreeSurface(surface);
     glBindTexture(GL_TEXTURE_2D, 0);
 
 
@@ -150,8 +162,8 @@ int main() {
         glUniform1i(glGetUniformLocation(ourShader.Program, "ourTexture2"), 1);
 
         // Activate shader
-        ourShader.Use();       
-        
+        ourShader.Use();
+
         // Draw container
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
